@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - Enemy
+  - Bullet
+  - Collectable
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Background
+  - Foreground
+  - Player
+  - Enemy
+  - Bullet
+  - Collectable
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3792583883
+    locked: 0
+  - name: Foreground
+    uniqueID: 4270798829
+    locked: 0
+  - name: Player
+    uniqueID: 3391106831
+    locked: 0
+  - name: Enemy
+    uniqueID: 3211883369
+    locked: 0
+  m_RenderingLayers:
+  - Default
