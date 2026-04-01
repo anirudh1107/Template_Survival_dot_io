@@ -83,63 +83,19 @@ public class WeaponManager : MonoBehaviour {
         
         CreatePool(projectileType);
         // 3. Initialize with stats
-        weaponBehaviors[projectileType].Initialize(data.baseStats, weaponDataSODict[projectileType].projectilePrefab, this);
+        weaponBehaviors[projectileType].Initialize(data.baseStats, projectileType, weaponDataSODict[projectileType].projectilePrefab, this);
         
         // 4. Add to active list
         activeWeapons.Add(weaponBehaviors[projectileType]);
     }
 
-    // Projectile CreateProjectile() {
-    //      var p = Instantiate(weaponDataSODict[ProjectileType.Projectile].projectilePrefab).GetComponent<Projectile>();
-    //      return p;
-    // }
-
     void Update() {
-        // // 1. Handle Firing Cooldown
-        // _fireTimer -= Time.deltaTime;
-        // if (_fireTimer <= 0) {
-        //     Fire();
-        //     _fireTimer = data.baseStats.cooldown;
-        // }
-
-        // // 2. Optimized Movement: One loop for all bullets
-        // float dt = Time.deltaTime;
-        // for (int i = _activeProjectiles.Count - 1; i >= 0; i--) {
-        //     _activeProjectiles[i].ManagedUpdate(dt);
-        // }
-
-        // Run all weapons
+    
         float dt = Time.deltaTime;
         for (int i = 0; i < activeWeapons.Count; i++) {
             activeWeapons[i].DoUpdate(dt);
         }
     }
-
-    // void Fire() {
-    //     Transform target = GetNearestEnemy();
-    //     if (target == null) return;
-
-    //     Vector3 dir = (target.position - transform.position).normalized;
-    //     var p = _pool.Get();
-    //     p.transform.position = transform.position;
-    //     p.Init(_pool, dir, data.baseStats.speed, 5f, data.baseStats.damage);
-    // }
-
-    // public Transform GetNearestEnemy(float range) {
-    //     // Standard optimization: Only check within range
-    //     Collider2D[] hits = Physics2D.OverlapCircleAll(this.transform.position, range, enemyLayer);
-    //     Transform closest = null;
-    //     float minSqDist = Mathf.Infinity;
-
-    //     foreach (var hit in hits) {
-    //         float sqDist = (hit.transform.position - this.transform.position).sqrMagnitude;
-    //         if (sqDist < minSqDist) {
-    //             minSqDist = sqDist;
-    //             closest = hit.transform;
-    //         }
-    //     }
-    //     return closest;
-    // }
 
     public List<Transform> GetEnemiesByDistance(float range) {
 
@@ -161,11 +117,16 @@ public class WeaponManager : MonoBehaviour {
         return null;
     }
 
-    private void HandleWeaponUpgrade() {
+    private void HandleWeaponUpgrade(UpdateData upgradeData) {
         // // For testing, let's just increase projectile number for the projectile weapon
-        // foreach (WeaponBase weapon in activeWeapons) {
-        //     Debug.Log($"Active Weapon: {weapon.Name} with projectile number {weapon.projectileNumber}");
-        // }
+        
+        foreach (WeaponBase weapon in activeWeapons) {
+
+            if (weapon.weaponType == upgradeData.weaponType) {
+                weapon.Upgrade(upgradeData);
+            }
+            //Debug.Log($"Active Weapon: {weapon.} with projectile number {weapon.projectileNumber}");
+        }
         // if (weaponBehaviors.TryGetValue(ProjectileType.Projectile, out var weapon)) {
         //     weapon.projectileNumber += 1; // This will affect how many projectiles are fired in the next attack
         //     Debug.Log($"Upgraded Projectile Weapon! Now fires {weapon.projectileNumber} projectiles.");

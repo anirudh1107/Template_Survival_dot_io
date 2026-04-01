@@ -58,10 +58,10 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
     }
 
     void Die() {
+
+        Instantiate(collectablePrefab, transform.position, Quaternion.identity);
         // // Industry Standard: Never Destroy(). Return to EnemyPool.
         EnemyManager.Instance.RemoveEnemyAtIndex(enemyIndex);
-        Instantiate(collectablePrefab, transform.position, Quaternion.identity);
-        
         // // Spawn XP Gem here
         // XPPool.Instance.Spawn(transform.position); 
     }

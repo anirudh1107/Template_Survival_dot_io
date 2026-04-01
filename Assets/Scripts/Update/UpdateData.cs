@@ -8,6 +8,7 @@ public class UpdateData : ScriptableObject
     [TextArea] public string description;
     public Sprite icon;
     public UpdateType itemType;
+    public ProjectileType weaponType; // Only relevant if itemType is Weapon
     
     [Header("Progression")]
     public int currentLevel = 1;

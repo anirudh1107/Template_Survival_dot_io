@@ -22,7 +22,6 @@ public class ProjectileWeapon : WeaponBase {
             p.GetComponent<Projectile>().Init(pool, activeProjectiles.Count, direction, projectileSpeed, currentStats.duration, currentStats.damage, ProjectileType.Projectile);
             activeProjectiles.Add(p); // Keep track if we need to manage them further (like for area weapons)
             // Ideally: ProjectileManager.Instance.Spawn(projectilePrefab, transform.position, direction, currentStats);
-            Debug.Log($"Fired at {targets[i].name}"); 
         }
         
     }
@@ -39,11 +38,6 @@ public class ProjectileWeapon : WeaponBase {
         // to avoid running OverlapCircle 6 times for 6 different weapons.
         enemyTargets.Clear();
         enemyTargets = WeaponManager.Instance.GetEnemiesByDistance(currentStats.area);
-        int i =0;
-        foreach (var enemy in enemyTargets) {
-            Debug.Log($"Found enemy: {i} at distance {enemy.position}");
-            i++;
-        }
         return enemyTargets.Take(numberOfTargets).ToList(); // Return the closest N targets
     }
 }

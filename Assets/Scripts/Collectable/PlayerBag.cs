@@ -40,6 +40,10 @@ public class PlayerBag : MonoBehaviour
         {
             currentMoney += amount;
         }
+        UpgradeManager.Instance.HandleMoneyChange(currentMoney);
+        if (currentMoney >= 100f) {
+            currentMoney = 0f; // Reset money after triggering upgrade
+        }
     }
 
     public void CollectItem(BaseCollectable item)
@@ -54,6 +58,10 @@ public class PlayerBag : MonoBehaviour
         {
             Debug.Log("Bag is full! Cannot collect more items.");
         }
+    }
+
+    public float GetCurrentMoney() {
+        return currentMoney;
     }
 
 
