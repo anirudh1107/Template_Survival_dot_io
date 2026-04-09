@@ -34,7 +34,6 @@ public abstract class WeaponBase {
         UpdateProjectiles(dt);
         if (cooldownTimer <= 0) {
             Attack();
-            WeaponManager.OnGunFire?.Invoke();
             cooldownTimer = currentStats.cooldown;
         }
     }

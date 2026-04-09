@@ -8,17 +8,23 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private SoundCollectionSO soundCollectionSO; // Assign in Inspector
 
     private void OnEnable() {
-        playerHealth.OnPlayerHurt += HandlePlayerHurt;
-        playerHealth.OnPlayerDeath += HandlePlayerDeath;
+        if (playerHealth != null) {
+            playerHealth.OnPlayerHurt += HandlePlayerHurt;
+            playerHealth.OnPlayerDeath += HandlePlayerDeath;
+        }
         // EnemyHealth.OnEnemyHurt += HandleEnemyHurt;
         WeaponManager.OnGunFire += HandleGunShot;
+        
     }
 
     private void OnDisable() {
-        playerHealth.OnPlayerHurt -= HandlePlayerHurt;
-        playerHealth.OnPlayerDeath -= HandlePlayerDeath;
+        if (playerHealth != null) {
+            playerHealth.OnPlayerHurt -= HandlePlayerHurt;
+            playerHealth.OnPlayerDeath -= HandlePlayerDeath;
+        }
         // EnemyHealth.OnEnemyHurt -= HandleEnemyHurt;
-         WeaponManager.OnGunFire -= HandleGunShot;
+        WeaponManager.OnGunFire -= HandleGunShot;
+        
     }
 
     private void Awake()

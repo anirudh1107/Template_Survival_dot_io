@@ -12,7 +12,6 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float lastDamageTime = -Mathf.Infinity;
     [SerializeField] private float defaultDmage = 10f; 
 
-    private bool isInvulnerable = false;
 
      void OnEnable()
     {
@@ -54,21 +53,11 @@ public class PlayerHealth : MonoBehaviour
         Destroy(gameObject);
     }
 
-    IEnumerator InvulnerabilityCoroutine(float duration)
-    {
-        isInvulnerable = true;
-        yield return new WaitForSeconds(duration);
-        isInvulnerable = false;
-    }
-
     void OnTriggerEnter2D(Collider2D collision) {
-        if (isInvulnerable) return; // Ignore collisions while invulnerable
         if (collision.CompareTag("Enemy")) {
             Debug.Log("Player hit by enemy!");
             TakeDamage(defaultDmage); // You can replace this with actual damage from the projectile
             this.GetComponent<Knockback>().ApplyKnockback(); // Apply knockback effect
-            StartCoroutine(InvulnerabilityCoroutine(damageCooldown)); // Start invulnerability after taking damage
-
         }
     }
 
