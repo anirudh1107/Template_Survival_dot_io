@@ -2,10 +2,13 @@ using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class WeaponManager : MonoBehaviour {
     public LayerMask enemyLayer;
     public static WeaponManager Instance { get; private set; }
+
+    public static Action OnGunFire;
 
     [SerializeField] private WeaponData projectileWeaponData;
     [SerializeField] private WeaponData orbitalWeaponData;
@@ -48,13 +51,6 @@ public class WeaponManager : MonoBehaviour {
         weaponBehaviors.Add(ProjectileType.Orbital, orbitalWeapon);
         weaponBehaviors.Add(ProjectileType.Area, areaWeapon);
         
-        // Create the pool: (Create, OnGet, OnRelease, OnDestroy)
-        // _pool = new ObjectPool<Projectile>(
-        //     CreateProjectile, 
-        //     p => { p.gameObject.SetActive(true); _activeProjectiles.Add(p); }, 
-        //     p => { p.gameObject.SetActive(false); _activeProjectiles.Remove(p); }, 
-        //     p => Destroy(p.gameObject), 
-        //     false, 10, 1000);
     }
 
     private void Start() {
@@ -127,10 +123,6 @@ public class WeaponManager : MonoBehaviour {
             }
             //Debug.Log($"Active Weapon: {weapon.} with projectile number {weapon.projectileNumber}");
         }
-        // if (weaponBehaviors.TryGetValue(ProjectileType.Projectile, out var weapon)) {
-        //     weapon.projectileNumber += 1; // This will affect how many projectiles are fired in the next attack
-        //     Debug.Log($"Upgraded Projectile Weapon! Now fires {weapon.projectileNumber} projectiles.");
-        // }
     }
 
 }

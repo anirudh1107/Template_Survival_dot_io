@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fdfe410c94af804faf2f4a8b5cc4418, type: 3}
+  m_Name: SoundCollectionSO
+  m_EditorClassIdentifier: Assembly-CSharp::SoundCollectionSO
+  GunShots:
+  - {fileID: 11400000, guid: 41319281ed171654d9d85aaac6edabe6, type: 2}
+  PlayerHurt:
+  - {fileID: 11400000, guid: 0193a8a2517bbb6409344332e8b37353, type: 2}
+  EnemyHurt: []
+  PlayerDeath:
+  - {fileID: 11400000, guid: 336e4a3ec1b00fe4d82a7e6b3cab40b7, type: 2}
