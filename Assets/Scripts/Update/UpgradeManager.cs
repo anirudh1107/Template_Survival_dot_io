@@ -24,6 +24,12 @@ public class UpgradeManager : MonoBehaviour
         currentRunItems = new List<UpdateData>(allAvailableItems);
     }
 
+    private void Start() {
+        foreach (var item in allAvailableItems) {
+            item.currentLevel = 1; // Reset levels at the start of each run
+        }
+    }
+
     public void TriggerUpgrade()
     {
         UpgradeUIManager.Instance.ShowUpgradeUI();

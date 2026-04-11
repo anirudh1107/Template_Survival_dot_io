@@ -13,6 +13,7 @@ public class WeaponManager : MonoBehaviour {
     [SerializeField] private WeaponData projectileWeaponData;
     [SerializeField] private WeaponData orbitalWeaponData;
     [SerializeField] private WeaponData areaWeaponData;
+    [SerializeField] private Transform weaponPoint;
     public Dictionary<ProjectileType, WeaponBase> weaponBehaviors = new Dictionary<ProjectileType, WeaponBase>();
     public Dictionary<ProjectileType, IObjectPool<GameObject>> projectilePools = new Dictionary<ProjectileType, IObjectPool<GameObject>>();
     public Dictionary<ProjectileType, WeaponData> weaponDataSODict = new Dictionary<ProjectileType, WeaponData>();
@@ -104,6 +105,10 @@ public class WeaponManager : MonoBehaviour {
     public Vector3 GetPlayerPosition() {
         return this.transform.position;
     }   
+
+    public Vector3 GetWeaponPoint() {
+        return weaponPoint.position;
+    }
 
     private WeaponBase GetWeapon(ProjectileType type) {
         if (weaponBehaviors.TryGetValue(type, out var weapon)) {

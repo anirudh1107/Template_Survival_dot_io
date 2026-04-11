@@ -11,19 +11,19 @@ public class ProjectileWeapon : WeaponBase {
         List<Transform> targets = GetNearestEnemy(projectileNumber); 
         if (targets.Count == 0) return; // No enemy? Don't fire, keep cooldown ready? Or waste shot? Depends on design.
 
+        // Invoke Gun Fire Event
+        if (WeaponManager.OnGunFire != null) {
+            WeaponManager.OnGunFire.Invoke();
+         }
         // 3. Spawn Projectile (Using the Pool logic we discussed earlier)
         for (int i = 0; i < projectileNumber; i++) {
             if (i >= targets.Count) break; // If we have fewer targets than projectileNumber, just fire at available targets.
-            Vector3 direction = (targets[i].position - managerContext.transform.position).normalized;
+            Vector3 direction = (targets[i].position - managerContext.GetWeaponPoint()).normalized;
             var p = pool.Get();
-            p.transform.position = WeaponManager.Instance.GetPlayerPosition();
+            p.transform.position = managerContext.GetWeaponPoint();
             p.GetComponent<Projectile>().Init(pool, activeProjectiles.Count, direction, projectileSpeed, currentStats.duration, currentStats.damage, ProjectileType.Projectile);
             activeProjectiles.Add(p); // Keep track if we need to manage them further (like for area weapons)
             // Ideally: ProjectileManager.Instance.Spawn(projectilePrefab, transform.position, direction, currentStats);
-            // Invoke Gun Fire Event
-            if (WeaponManager.OnGunFire != null) {
-                WeaponManager.OnGunFire.Invoke();
-            }
         }
         
     }
