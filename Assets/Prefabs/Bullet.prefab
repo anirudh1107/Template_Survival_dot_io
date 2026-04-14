@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9204749067106570619}
   - component: {fileID: 5888607844592873112}
   - component: {fileID: 4580631509696071574}
-  - component: {fileID: 5589676772960914973}
+  - component: {fileID: 6402447678285355730}
   m_Layer: 10
   m_Name: Bullet
   m_TagString: Bullet
@@ -157,7 +157,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5589676772960914973
+--- !u!114 &6402447678285355730
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,6 +166,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 4835526694269166558}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 882f8949bfb6e5543a6bb8ef11f46333, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f6a5cceb2de3604ab5e644fd857868f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Projectile
+  m_EditorClassIdentifier: Assembly-CSharp::GunProjectile
