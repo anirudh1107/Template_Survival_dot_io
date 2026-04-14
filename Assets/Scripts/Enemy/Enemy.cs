@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
         enemyIndex = index;
     }
 
-    public void TakeDamage(float amount, Vector3 hitDirection) {
+    public void TakeDamage(float amount, Vector3 hitDirection, float knockbackForce = 0f) {
         _currentHealth -= amount;
 
         if (_currentHealth <= 0) {
@@ -58,7 +58,7 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
             StartCoroutine(FlashEffect());
 
             if (this.TryGetComponent<Knockback>(out Knockback knockback)) {
-                knockback.InitKnockback(hitDirection, 10f); // Adjust parameters as needed
+                knockback.InitKnockback(hitDirection, knockbackForce); // Adjust parameters as needed
             }
         } 
     }

@@ -21,7 +21,7 @@ public class ProjectileWeapon : WeaponBase {
             Vector3 direction = (targets[i].position - managerContext.GetWeaponPoint()).normalized;
             var p = pool.Get();
             p.transform.position = managerContext.GetWeaponPoint();
-            p.GetComponent<Projectile>().Init(pool, activeProjectiles.Count, direction, projectileSpeed, currentStats.duration, currentStats.damage, ProjectileType.Projectile);
+            p.GetComponent<GunProjectile>().Init(pool, activeProjectiles.Count, direction, projectileSpeed, currentStats.duration, currentStats.damage, ProjectileType.Projectile);
             activeProjectiles.Add(p); // Keep track if we need to manage them further (like for area weapons)
             // Ideally: ProjectileManager.Instance.Spawn(projectilePrefab, transform.position, direction, currentStats);
         }

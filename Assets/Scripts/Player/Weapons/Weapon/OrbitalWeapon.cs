@@ -17,7 +17,7 @@ public class OrbitalWeapon : WeaponBase
         var p = pool.Get();
         p.transform.position = WeaponManager.Instance.GetPlayerPosition();
         int newIndex  = activeProjectiles.Count;
-        p.GetComponent<Projectile>().Init(pool, newIndex, direction, currentStats.speed, currentStats.duration, currentStats.damage, ProjectileType.Orbital);
+        p.GetComponent<OrbitalProjectile>().Init(pool, newIndex, direction, currentStats.speed, currentStats.duration, currentStats.damage, ProjectileType.Orbital);
         activeProjectiles.Add(p); // Keep track if we need to manage them further (like for area weapons)
         // Ideally: ProjectileManager.Instance.Spawn(projectilePrefab, transform.position, direction, currentStats);
         Debug.Log($"Fired at {target.name}");
