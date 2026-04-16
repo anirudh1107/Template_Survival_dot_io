@@ -18,10 +18,14 @@ public class PlayerHealth : MonoBehaviour
         // Subscribe to events if needed
     }
 
+    private void Awake() {
+        currentHealth = maxHealth;
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHealth = maxHealth;
+    
     }
 
     // Update is called once per frame
@@ -51,6 +55,11 @@ public class PlayerHealth : MonoBehaviour
         // Add death logic here (e.g., play animation, disable player controls, etc.)
         Debug.Log("Player has died!");
         Destroy(gameObject);
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
     }
 
     void OnTriggerEnter2D(Collider2D collision) {
