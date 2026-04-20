@@ -6,13 +6,22 @@ public class EnemyManager : MonoBehaviour
 {
     public static EnemyManager Instance { get; private set; }
     [SerializeField] private int enemyCount = 50;
+    [SerializeField] private float ringSpawnFrequency = 5.0f;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float ringRadius = 10f;
     [SerializeField] private int numberOfEnemiesInRing = 12;
 
-    private IObjectPool<Enemy> enemyPool;
+    private IObjectPool<Enemy> ringEnemyPool;
+    private IObjectPool<Enemy> harmonicEnemyPool;
+    private IObjectPool<Enemy> archimedeanSpiralPool;
     private List<Enemy> activeEnemies = new List<Enemy>();
+    private float verticalHeight;
+    private float horizontalWidth;
+
+    private Vector3 upperScreenBound;
+    private Vector3 leftScreenBound;
+
    
 
 
@@ -22,8 +31,32 @@ public class EnemyManager : MonoBehaviour
             return;
         }
         Instance = this;
-        enemyPool = new ObjectPool<Enemy>(
-            CreateEnemy,
+        CreatePools();
+    }
+
+    private void CreatePools() {
+        ringEnemyPool = new ObjectPool<Enemy>(
+            () => CreateEnemy(EnemyPattern.ringSpawn),
+            OnGetFromPool,
+            OnReleaseToPool,
+            OnDestroyFromPool,
+            true,
+            enemyCount,
+            enemyCount * 2
+        );
+
+        harmonicEnemyPool = new ObjectPool<Enemy>(
+            () => CreateEnemy(EnemyPattern.harmonic),
+            OnGetFromPool,
+            OnReleaseToPool,
+            OnDestroyFromPool,
+            true,
+            enemyCount,
+            enemyCount * 2
+        );
+
+        archimedeanSpiralPool = new ObjectPool<Enemy>(
+            () => CreateEnemy(EnemyPattern.archimedeanSpiral),
             OnGetFromPool,
             OnReleaseToPool,
             OnDestroyFromPool,
@@ -33,10 +66,10 @@ public class EnemyManager : MonoBehaviour
         );
     }
 
-    private Enemy CreateEnemy()
+    private Enemy CreateEnemy(EnemyPattern pattern)
     {
         Enemy enemy = Instantiate(enemyPrefab).GetComponent<Enemy>();
-        enemy.InitEnemy(enemyPool);
+        enemy.InitEnemy(ringEnemyPool, pattern);
         return enemy;
     }
     
@@ -56,35 +89,27 @@ public class EnemyManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        InvokeRepeating(nameof(SpawnEnemiesInRing), 2.0f, 4f);
+        verticalHeight = Camera.main.orthographicSize;
+        horizontalWidth = verticalHeight * Camera.main.aspect;
+        
+        
+        InvokeRepeating(nameof(SpawnEnemiesInRing), ringSpawnFrequency, 4f);
+        //InvokeRepeating(nameof(SpawnEnemiesInHarmonic), 10f, 4f);
+        //InvokeRepeating(nameof(SpawnEnemiesInArchimedeanSpiral), 15f, 4f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        upperScreenBound = new Vector3(playerTransform.position.x, playerTransform.position.y + verticalHeight, 0f);
+        leftScreenBound = new Vector3(playerTransform.position.x - horizontalWidth, playerTransform.position.y, 0f);
+        // Enemy towards player 
         for (int i = activeEnemies.Count - 1; i >= 0; i--)
         {
             Enemy e = activeEnemies[i];
 
             // 1. Process Logic (Move towards player)
             activeEnemies[i].transform.position = Vector3.MoveTowards(activeEnemies[i].transform.position, playerTransform.position, Time.deltaTime);
-
-            // 2. Check for "Death"
-            // Inside your Update loop
-            // if (e._currentHealth <= 0)
-            // {
-            //     // 1. Return to pool
-            //     enemyPool.Release(e);
-
-            //     // 2. Optimized Swap-Back Removal
-            //     int lastIndex = activeEnemies.Count - 1;
-            //     activeEnemies[i] = activeEnemies[lastIndex]; // Move last enemy to current gap
-            //     activeEnemies.RemoveAt(lastIndex);           // Remove the duplicate at the end
-        
-            //     // Note: Since we moved a 'new' enemy into index 'i', 
-            //     // we need to process this same index again next iteration!
-            //     continue; 
-            // }
         }
     }
 
@@ -100,7 +125,7 @@ public class EnemyManager : MonoBehaviour
             Vector3 spawnPos = playerTransform.position + spawnOffset;
 
             // Pull from our optimized pool
-            Enemy enemy = enemyPool.Get();
+            Enemy enemy = ringEnemyPool.Get();
             enemy.transform.position = spawnPos;
         
             // Add to our active list for the Manager-Led Update
@@ -119,13 +144,30 @@ public class EnemyManager : MonoBehaviour
         if (index < 0 || index >= activeEnemies.Count) return;
 
         // 1. Return to pool
-        enemyPool.Release(activeEnemies[index]);
+        ringEnemyPool.Release(activeEnemies[index]);
 
         // 2. Optimized Swap-Back Removal
         int lastIndex = activeEnemies.Count - 1;
         activeEnemies[index] = activeEnemies[lastIndex]; // Move last enemy to current gap
         activeEnemies[index].SetEnemyIndex(index); // Update the enemy's index in the list
         activeEnemies.RemoveAt(lastIndex);           // Remove the duplicate at the end
+    }
+
+    public void SpawnEnemiesInHarmonic()
+    {
+        // Implement harmonic spawning logic here
+    }
+
+    public void SpawnEnemiesInArchimedeanSpiral()
+    {
+        // Implement archimedean spiral spawning logic here
+    }
+
+    public enum EnemyPattern{
+        ringSpawn,
+        harmonic,
+        archimedeanSpiral,
+        BezierCurves
     }
 
 }

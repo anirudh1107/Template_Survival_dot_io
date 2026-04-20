@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
     private IObjectPool<Enemy> _pool;
 
     private SpriteRenderer _renderer;
+    private EnemyManager.EnemyPattern currentPattern;
 
     
 
@@ -29,9 +30,10 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
         
     }
 
-    public void InitEnemy(IObjectPool<Enemy> pool) {
+    public void InitEnemy(IObjectPool<Enemy> pool, EnemyManager.EnemyPattern pattern = EnemyManager.EnemyPattern.ringSpawn) {
         _pool = pool;
         _currentHealth = maxHealth;
+        currentPattern = pattern;
     }
 
     public void ResetState()
