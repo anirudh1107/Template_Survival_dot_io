@@ -149,10 +149,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyManager
   enemyCount: 50
+  ringSpawnFrequency: 10.84
+  harmonicSpawnFrequency: 5
   enemyPrefab: {fileID: 1275066531320752933, guid: 4c96059b4a806cc40a6ad90ceb6b78cb, type: 3}
   playerTransform: {fileID: 1991358392}
   ringRadius: 10
   numberOfEnemiesInRing: 12
+  amplitude: 1
+  frequency: 2.1
+  phaseShift: 0
+  speed: 0.8
+  harmonicunitSpawnFrequency: 0.3
 --- !u!4 &161327347
 Transform:
   m_ObjectHideFlags: 0

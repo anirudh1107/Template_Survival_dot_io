@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
 
     private SpriteRenderer _renderer;
     private EnemyManager.EnemyPattern currentPattern;
+    private Vector2 origin;
 
     
 
@@ -46,6 +47,11 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
     public void SetEnemyIndex(int index)
     {
         enemyIndex = index;
+    }
+
+    public EnemyManager.EnemyPattern GetCurrentPattern()
+    {
+        return currentPattern;
     }
 
     public void TakeDamage(float amount, Vector3 hitDirection, float knockbackForce = 0f) {

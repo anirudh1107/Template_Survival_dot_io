@@ -7,10 +7,18 @@ public class EnemyManager : MonoBehaviour
     public static EnemyManager Instance { get; private set; }
     [SerializeField] private int enemyCount = 50;
     [SerializeField] private float ringSpawnFrequency = 5.0f;
+    [SerializeField] private float harmonicSpawnFrequency = 5.0f;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float ringRadius = 10f;
     [SerializeField] private int numberOfEnemiesInRing = 12;
+    [Header("Harmonic Pattern Settings")]
+    [SerializeField] private float amplitude = 1f;
+    [SerializeField] private float frequency = 1f;
+    [SerializeField] private float phaseShift = 0f;
+    [SerializeField] private float speed = 0.3f;
+    [SerializeField] private float harmonicunitSpawnFrequency = 0.1f;
+
 
     private IObjectPool<Enemy> ringEnemyPool;
     private IObjectPool<Enemy> harmonicEnemyPool;
@@ -93,8 +101,8 @@ public class EnemyManager : MonoBehaviour
         horizontalWidth = verticalHeight * Camera.main.aspect;
         
         
-        InvokeRepeating(nameof(SpawnEnemiesInRing), ringSpawnFrequency, 4f);
-        //InvokeRepeating(nameof(SpawnEnemiesInHarmonic), 10f, 4f);
+        InvokeRepeating(nameof(SpawnEnemiesInRing), 8f, ringSpawnFrequency);
+        InvokeRepeating(nameof(SpawnEnemiesInHarmonic), 4f, harmonicSpawnFrequency);
         //InvokeRepeating(nameof(SpawnEnemiesInArchimedeanSpiral), 15f, 4f);
     }
 
@@ -103,13 +111,33 @@ public class EnemyManager : MonoBehaviour
     {
         upperScreenBound = new Vector3(playerTransform.position.x, playerTransform.position.y + verticalHeight, 0f);
         leftScreenBound = new Vector3(playerTransform.position.x - horizontalWidth, playerTransform.position.y, 0f);
-        // Enemy towards player 
+
+
+        //
+
+        
         for (int i = activeEnemies.Count - 1; i >= 0; i--)
         {
             Enemy e = activeEnemies[i];
 
-            // 1. Process Logic (Move towards player)
-            activeEnemies[i].transform.position = Vector3.MoveTowards(activeEnemies[i].transform.position, playerTransform.position, Time.deltaTime);
+            if (e == null) continue; // Safety check
+            if (e.GetCurrentPattern() == EnemyPattern.ringSpawn) // Spiral Pattern Enemy towards player
+            {
+                // 1. Process Logic (Move towards player)
+                activeEnemies[i].transform.position = Vector3.MoveTowards(activeEnemies[i].transform.position, playerTransform.position, Time.deltaTime);
+            }
+            else if (e.GetCurrentPattern() == EnemyPattern.harmonic) // Harmonic Pattern Enemy
+            {
+                // Implement harmonic movement logic here
+                HarmonicUpdate(activeEnemies[i], i);
+            }
+            else if (e.GetCurrentPattern() == EnemyPattern.archimedeanSpiral) // Archimedean Spiral Pattern Enemy
+            {
+                // Implement archimedean spiral movement logic here
+            }
+
+            
+            
         }
     }
 
@@ -153,9 +181,22 @@ public class EnemyManager : MonoBehaviour
         activeEnemies.RemoveAt(lastIndex);           // Remove the duplicate at the end
     }
 
+    private void HarmonicUpdate(Enemy enemy, float phaseShift = 0f)
+    {
+        //phaseShift += Time.deltaTime; // Adjust phase shift over time for movement variation
+        // Implement harmonic movement logic here
+        float x = amplitude * Mathf.Sin(Time.time * frequency + phaseShift) + upperScreenBound.x;
+        float y = enemy.transform.position.y - (speed * Time.deltaTime);
+        enemy.transform.position = new Vector3(x, y, 0);
+    }
+
     public void SpawnEnemiesInHarmonic()
     {
         // Implement harmonic spawning logic here
+        
+            
+            StartCoroutine(HarmonicSpawnDelay());
+        
     }
 
     public void SpawnEnemiesInArchimedeanSpiral()
@@ -168,6 +209,20 @@ public class EnemyManager : MonoBehaviour
         harmonic,
         archimedeanSpiral,
         BezierCurves
+    }
+
+    private System.Collections.IEnumerator HarmonicSpawnDelay()
+    {
+        for (int i = 0; i < numberOfEnemiesInRing; i++)
+        {
+            Vector3 spawnPos = new Vector3(upperScreenBound.x, upperScreenBound.y, 0f);
+            Enemy enemy = harmonicEnemyPool.Get();
+            enemy.transform.position = spawnPos;
+            enemy.SetEnemyIndex(activeEnemies.Count);
+            activeEnemies.Add(enemy);
+            yield return new WaitForSeconds(harmonicunitSpawnFrequency); 
+        }
+        
     }
 
 }
