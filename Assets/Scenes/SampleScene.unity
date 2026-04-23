@@ -155,8 +155,8 @@ MonoBehaviour:
   playerTransform: {fileID: 1991358392}
   ringRadius: 10
   numberOfEnemiesInRing: 12
-  amplitude: 1
-  frequency: 2.1
+  amplitude: 0.46
+  frequency: 0.9
   phaseShift: 0
   speed: 0.8
   harmonicunitSpawnFrequency: 0.3
