@@ -14,6 +14,8 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
 
     private SpriteRenderer _renderer;
     private EnemyManager.EnemyPattern currentPattern;
+    private float currentTheta; 
+    private Vector3 spawnCenter;
 
     
 
@@ -34,6 +36,7 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
         _pool = pool;
         _currentHealth = maxHealth;
         currentPattern = pattern;
+        currentTheta = 0f; // Reset angle for patterns that use it
     }
 
     public void ResetState()
@@ -52,6 +55,27 @@ public class Enemy : MonoBehaviour, IPoolable, IDamageable
     {
         return currentPattern;
     }
+
+    public void SetSpawnCenter(Vector3 center)
+    {
+        spawnCenter = center;
+    }
+
+    public void SetCurrentTheta(float theta)
+    {
+        currentTheta = theta;
+    }
+    
+    public float GetCurrentTheta()
+    {
+        return currentTheta;
+    }
+
+    public Vector3 GetSpawnCenter()
+    {
+        return spawnCenter;
+    }
+
 
     public void TakeDamage(float amount, Vector3 hitDirection, float knockbackForce = 0f) {
         _currentHealth -= amount;

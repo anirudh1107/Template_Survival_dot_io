@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -8,6 +9,7 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private int enemyCount = 50;
     [SerializeField] private float ringSpawnFrequency = 5.0f;
     [SerializeField] private float harmonicSpawnFrequency = 5.0f;
+    [SerializeField] private float spiralSpawnFrequency = 5.0f;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float ringRadius = 10f;
@@ -18,6 +20,10 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private float phaseShift = 0f;
     [SerializeField] private float speed = 0.3f;
     [SerializeField] private float harmonicunitSpawnFrequency = 0.1f;
+    [Header("Spiral Settings")]
+    [SerializeField] private float growthFactor = 0.5f;   // 'b' in the formula (distance between rings)
+    [SerializeField] private float angularSpeed = 5f;    // How fast they rotate
+    [SerializeField] private float spiralSpawnInterval = 0.1f; // Time between spawning each enemy in the spiral
 
 
     private IObjectPool<Enemy> ringEnemyPool;
@@ -29,6 +35,8 @@ public class EnemyManager : MonoBehaviour
 
     private Vector3 upperScreenBound;
     private Vector3 leftScreenBound;
+
+    private float spiralSpawndt = 0f;
 
    
 
@@ -103,8 +111,8 @@ public class EnemyManager : MonoBehaviour
         
         
         InvokeRepeating(nameof(SpawnEnemiesInRing), 8f, ringSpawnFrequency);
-        InvokeRepeating(nameof(SpawnEnemiesInHarmonic), 4f, harmonicSpawnFrequency);
-        //InvokeRepeating(nameof(SpawnEnemiesInArchimedeanSpiral), 15f, 4f);
+        //InvokeRepeating(nameof(SpawnEnemiesInHarmonic), 8f, harmonicSpawnFrequency);
+        InvokeRepeating(nameof(SpawnEnemiesInArchimedeanSpiral), 4f, spiralSpawnFrequency);
     }
 
     // Update is called once per frame
@@ -113,10 +121,8 @@ public class EnemyManager : MonoBehaviour
         upperScreenBound = new Vector3(playerTransform.position.x, playerTransform.position.y + verticalHeight, 0f);
         leftScreenBound = new Vector3(playerTransform.position.x - horizontalWidth, playerTransform.position.y, 0f);
 
+        spiralSpawndt = Time.deltaTime;
 
-        //
-
-        
         for (int i = activeEnemies.Count - 1; i >= 0; i--)
         {
             Enemy e = activeEnemies[i];
@@ -135,7 +141,26 @@ public class EnemyManager : MonoBehaviour
             }
             else if (e.GetCurrentPattern() == EnemyPattern.archimedeanSpiral) // Archimedean Spiral Pattern Enemy
             {
-                // Implement archimedean spiral movement logic here
+                Enemy spiralEnemy = activeEnemies[i];
+            
+                // 1. Increment the angle
+                float currentTheta = spiralEnemy.GetCurrentTheta();
+                currentTheta += angularSpeed * spiralSpawndt;
+
+                // 2. Calculate Radius: r = b * theta
+                float r = growthFactor * currentTheta;
+
+                // 3. Convert Polar (r, theta) to Cartesian (x, y)
+                float x = r * Mathf.Cos(currentTheta);
+                float y = r * Mathf.Sin(currentTheta);
+
+                spiralEnemy.SetCurrentTheta(currentTheta); // Update the enemy's current angle for the next frame
+
+                // 4. Apply position relative to the spawn center
+                spiralEnemy.transform.position = spiralEnemy.GetSpawnCenter() + new Vector3(x, y, 0);
+            
+                // Optional: Rotate enemy to face the direction of movement
+                // (Standard Archimedean spiral tangent logic)
             }
 
             
@@ -195,15 +220,16 @@ public class EnemyManager : MonoBehaviour
     public void SpawnEnemiesInHarmonic()
     {
         // Implement harmonic spawning logic here
-        
-            
             StartCoroutine(HarmonicSpawnDelay());
         
     }
 
     public void SpawnEnemiesInArchimedeanSpiral()
     {
-        // Implement archimedean spiral spawning logic here
+        Vector3 spawnCenter = new Vector3(Random.Range(leftScreenBound.x, leftScreenBound.x + horizontalWidth),
+         Random.Range(upperScreenBound.y - verticalHeight, upperScreenBound.y), 0f);
+
+         StartCoroutine(SpiralSpawnDelay(spawnCenter));
     }
 
     public enum EnemyPattern{
@@ -213,7 +239,7 @@ public class EnemyManager : MonoBehaviour
         BezierCurves
     }
 
-    private System.Collections.IEnumerator HarmonicSpawnDelay()
+    private IEnumerator HarmonicSpawnDelay()
     {
         Vector3 spawnOrigin = new Vector3(Random.Range(leftScreenBound.x, leftScreenBound.x + horizontalWidth), upperScreenBound.y, 0f);
         for (int i = 0; i < numberOfEnemiesInRing; i++)
@@ -226,6 +252,19 @@ public class EnemyManager : MonoBehaviour
             yield return new WaitForSeconds(harmonicunitSpawnFrequency); 
         }
         
+    }
+
+    private IEnumerator SpiralSpawnDelay(Vector3 spawnCenter)
+    {
+        spiralSpawndt = 0;
+        for (int i = 0; i < numberOfEnemiesInRing; i++)
+        {
+            Enemy enemy = archimedeanSpiralPool.Get();
+            enemy.transform.position = spawnCenter;
+            enemy.SetEnemyIndex(activeEnemies.Count);
+            activeEnemies.Add(enemy);
+            yield return new WaitForSeconds(spiralSpawnInterval); 
+        }
     }
 
 }
